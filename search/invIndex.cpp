@@ -6,6 +6,8 @@
 #include<cstdlib>
 #include<vector>
 #include<cstdio>
+#include<algorithm>
+#include <unordered_map>
 #include"stemmer.h"
 #include"myhash.h"
 
@@ -22,7 +24,7 @@ struct node
 	int freq;
 };
 
-map<string, vector<node> > myMap;
+unordered_map<string, vector<node> > myMap;
 
 void initialize()
 {
@@ -33,7 +35,7 @@ int main(int argc, char *argv[])
 
     s = (char *) malloc(i_max + 1);
 //    initialize();
-    map<string, vector<node> >::iterator it;
+    unordered_map<string, vector<node> >::iterator it;
     Perfect_Hash *swCheck = new Perfect_Hash();
     node *mynode;
     char inFile[50];
@@ -155,8 +157,8 @@ int main(int argc, char *argv[])
 			if (isalpha(buffer[token]))
 			{
 			    myword = &buffer[token];
-			    if (swCheck->in_word_set(myword.c_str(),
-				    myword.size()) == 0)
+			    if (!swCheck->in_word_set(myword.c_str(),
+				    myword.size()))
 			    {
 				stemfile(myword);
 				myword = s;
@@ -181,7 +183,7 @@ int main(int argc, char *argv[])
 				mynode->category |= category;
 				mynode->link |= link;
 				mynode->infobox |= infobox;
-				mynode->freq++;
+				++mynode->freq;
 			    }
 			}
 			token = i + 1;
@@ -196,26 +198,27 @@ int main(int argc, char *argv[])
 	    //	    char *temp = buffer.c_str();
 	}
     }
-//    for (it = myMap.begin(); it != myMap.end(); it++)
-//    {
-//	//fpOut.write(it->first.c_str(),sizeof it->first);
-//	fpOut<<it->first<<" ";
-//	for (int i = 0; i < it->second.size(); i++)
-//	{
-//	    fpOut << it->second[i].docId<<","<<it->second[i].freq<<",";
-//	    if((it->second[i].title || it->second[i].infobox || it->second[i].link || it->second[i].category))
-//	    {
-////		fpOut.write((char *)it->second[i].title,1);
-////		fpOut.write((char *)it->second[i].infobox,1);
-////		fpOut.write((char *)it->second[i].link,1);
-////		fpOut.write((char *)it->second[i].category,1);
-//		fpOut<<it->second[i].title<<it->second[i].infobox<<it->second[i].link<<it->second[i].category;
-//	    }
-//	    fpOut<<",";
-//	}
-////	fpOut.write("\n",sizeof "\n");
-//	fpOut<<endl;
-//    }
+//    sort(myMap.begin(),myMap.end());
+    for (it = myMap.begin(); it != myMap.end(); it++)
+    {
+	//fpOut.write(it->first.c_str(),sizeof it->first);
+	fpOut<<it->first<<" ";
+	for (int i = 0; i < it->second.size(); i++)
+	{
+	    fpOut << it->second[i].docId<<","<<it->second[i].freq<<",";
+	    if((it->second[i].title || it->second[i].infobox || it->second[i].link || it->second[i].category))
+	    {
+//		fpOut.write((char *)it->second[i].title,1);
+//		fpOut.write((char *)it->second[i].infobox,1);
+//		fpOut.write((char *)it->second[i].link,1);
+//		fpOut.write((char *)it->second[i].category,1);
+		fpOut<<it->second[i].title<<it->second[i].infobox<<it->second[i].link<<it->second[i].category;
+	    }
+	    fpOut<<",";
+	}
+//	fpOut.write("\n",sizeof "\n");
+	fpOut<<endl;
+    }
     fpIn.close();
     return 0;
 }
