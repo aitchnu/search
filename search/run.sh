@@ -1,8 +1,10 @@
 #Takes the path of input xml file and output index file as arguments and builds the index on the output file
 
 # run on all the files
-for file in `ls Wiki_Split_Files/`
+cp invIndex $1
+cd $1
+for file in `ls`
 do
-    ./invIndex Wiki_Split_Files/$file $2
+      ./invIndex $file $2
 done
 
